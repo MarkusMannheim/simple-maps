@@ -26,12 +26,9 @@
     <div id="map"></div>
     <script>
       // load LGA data
-      Promise.all([
-        d3.json("./data/nbData.topojson"),
-        d3.json("./data/lgaData.topojson")
-      ]).then(function(data) {
-          lgas = topojson.feature(data[1], data[1].objects.areas);
-          northernBeaches = topojson.feature(data[0], data[0].objects.areas);
+      d3.json("./data/lgaData.topojson")
+        .then(function(data) {
+          lgas = topojson.feature(data, data.objects.lgas);
           // set up MapBox engine
           mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
           map = new mapboxgl.Map({
@@ -49,31 +46,17 @@
                 customAttribution: "ACT Health (COVID-19 advice), ABS (LGA boundaries)"
               }))
               // add GeoJSON
-              .addSource("other", {
+              .addSource("lgas", {
                 type: "geojson",
                 data: lgas
               })
-              .addSource("nb", {
-                type: "geojson",
-                data: northernBeaches
-              })
               .addLayer({
-                id: "other",
+                id: "lgas",
                 type: "fill",
-                source: "other",
+                source: "lgas",
                 paint: {
                   "fill-color": "#01CFFF",
-                  "fill-opacity": .75,
-                  "fill-outline-color": "white"
-                }
-              })
-              .addLayer({
-                id: "nb",
-                type: "fill",
-                source: "nb",
-                paint: {
-                  "fill-color": "#FF6100",
-                  "fill-opacity": .75,
+                  "fill-opacity": .5,
                   "fill-outline-color": "white"
                 }
               });
