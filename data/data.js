@@ -3,40 +3,16 @@ const d3 = require("d3"),
 
 var councils = [
   "Northern Beaches",
-  "Bayside",
   "Blacktown",
-  "Blue Mountains",
   "Burwood",
-  "Camden",
-  "Campbelltown",
   "Canada Bay",
   "Canterbury-Bankstown",
-  "Central Coast",
   "Cumberland",
   "Fairfield",
-  "Georges River",
-  "Hawkesbury",
-  "Hornsby",
-  "Hunters Hill",
   "Inner West",
-  "Ku-ring-gai",
   "Liverpool",
-  "Lane Cove",
-  "Mosman",
-  "North Sydney",
   "Parramatta",
-  "Penrith",
-  "Randwick",
-  "Ryde",
-  "Strathfield",
-  "Sutherland",
-  "Sydney",
-  "The Hills",
-  "Waverley",
-  "Willoughby",
-  "Wollondilly",
-  "Wollongong",
-  "Woollahra"
+  "Strathfield"  
 ];
 
 fs.readFile("lga.geojson", "utf8", function(error, data) {
@@ -55,10 +31,6 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
       return d;
     });
 
-  nbData = {
-    type: "FeatureCollection",
-    features: []
-  };
   lgaData = {
     type: "FeatureCollection",
     features: []
@@ -72,16 +44,9 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
       });
     console.log("Searching", council, "...", matches.length, "matches\n"
               + matches.map(function(d) { return d.properties.lga; }));
-    if (council == "Northern Beaches") {
-      nbData.features.push(matches[0]);
-    } else {
-      lgaData.features.push(matches[0]);
-    }
+    lgaData.features.push(matches[0]);
   });
 
-  fs.writeFile("nbData.geojson", JSON.stringify(nbData), function(error) {
-    console.log("nbData.geojson written");
-  });
   fs.writeFile("lgaData.geojson", JSON.stringify(lgaData), function(error) {
     console.log("lgaData.geojson written");
   });
