@@ -29,17 +29,102 @@ green: #00A388
 }
 :root {
   font-size: 1em;
-  font-family: "ABCSans Black", "Arial Black", sans-serif;
-  color: #1C1C1C;
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  color: #333;
 }
 body {
   opacity: 0;
-}
-body, #map {
   margin: 0;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  overflow: hidden;
+}
+#container {
+  display: flex;
+  flex-flow: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-bottom: .5rem;
+}
+#map {
+  height: 100%;
+  width: 100%;
+}
+#border {
+  fill: #f2f2f2;
+  stroke: #666;
+  stroke-dasharray: 2 2;
+}
+#water path {
+  fill: #999;
+  stroke: white;
+}
+#legend {
+  display: flex;
+  flex-flow: column;
+}
+#legendBar {
+  background: aliceblue;
+  height: 20px;
+  margin: 1rem 10px 0px 10px;
+}
+#axis {
+  height: 32px;
+}
+#footer {
+  font-size: .75rem;
+}
+#optionsType, #optionsDisplay {
+  position: fixed;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
+  text-align: center;
+  color: white;
+}
+.option {
+  background: #ccc;
+  padding: 5px;
+  margin-bottom: 5px;
+  box-shadow: 1px 1px 3px #333;
+  width: 80px;
+}
+#optionsDisplay .option {
+  margin-bottom: 0px;
+  margin-top: 5px;
+}
+.option.selected {
+  background: #F75F00;
+  pointer-events: none;
+}
+.suburb {
+  stroke: white;
+}
+.domain {
+  stroke: none;
+}
+.tick line {
+  stroke: #666;
+}
+.tick text {
+  fill: #666;
+  font-size: .7rem;
+}
+@media only screen and (min-width: 500px) {
+  .option {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    width: 90px;
+  }
+  #optionsDisplay .option {
+    margin-bottom: 0px;
+    margin.top: 10px;
+  }
+  #footer {
+    font-size: .8rem;
+  }
 }

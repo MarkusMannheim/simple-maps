@@ -6,12 +6,12 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-155991615-1');
+      gtag("js", new Date());
+      gtag("config", "UA-155991615-1");
     </script>
     <!-- my stuff -->
     <meta charset="utf-8">
-    <title>ACT rental prices</title>
+    <title>ACT rent prices</title>
     <meta name="author" content="Markus Mannheim">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Initial scripts -->
@@ -20,11 +20,174 @@
     <link href="./resources/rentStyle.css" rel="stylesheet">
     <link href="./resources/abcLogo64.png" rel="icon">
   </head>
+  <!-- raw html elements -->
   <body>
-    <svg id="map"></svg>
+    <div id="container">
+      <svg id="map">
+        <g id="mapGroup">
+          <path id="border"></path>
+          <g id="rentGroup"></g>
+          <g id="water">
+            <path id="nswWater"></path>
+            <path id="actWater"></path>
+          </g>
+        </g>
+      </svg>
+      <div id="legend">
+        <div id="legendBar"></div>
+        <svg id="axis">
+          <g id="axisGroup"></g>
+        </svg>
+      </div>
+      <div id="footer"><span>Change in median rent during 2020</span>. Suburbs with too few data are excluded. Data: CoreLogic</div>
+      <div id="optionsType">
+        <div class="option" onclick="changeType('houses')">HOUSES</div>
+        <div class="option selected" onclick="changeType('units')">UNITS</div>
+      </div>
+      <div id="optionsDisplay">
+        <div class="option selected" onclick="changeDisplay('changes')">CHANGES</div>
+        <div class="option" onclick="changeDisplay('prices')">PRICES</div>
+      </div>
+    </div>
     <script>
       // load LGA data
-      d3.json("./data/lgaData.topojson")
+      Promise.all([
+        d3.json("./data/rent.topojson"),
+        d3.json("./data/border.topojson"),
+        d3.json("./data/actWater.topojson"),
+        d3.json("./data/nswWater.topojson")
+      ]).then(function(data) {
+        // parse and format data
+        rentData = topojson.feature(data[0], data[0].objects.areas);
+        rentData.features
+          .forEach(function(d) {
+            d.properties.changes = (d.properties.dec2020 && d.properties.dec2019) ? (d.properties.dec2020 / d.properties.dec2019 - 1) : null;
+            d.properties.prices = d.properties.dec2020;
+          });
+        borderData = topojson.feature(data[1], data[1].objects.areas);
+        actWaterData = topojson.feature(data[2], data[2].objects.areas);
+        nswWaterData = topojson.feature(data[3], data[3].objects.areas);
+        // page elements
+        legend = d3.select("#legend");
+        legendBar = d3.select("#legendBar");
+        axis = d3.select("#axis");
+        axisGroup = d3.select("#axisGroup");
+        footer = d3.select("#footer");
+        container = d3.select("#container");
+        optionsType = d3.select("#optionsType");
+        optionsDisplay = d3.select("#optionsDisplay");
+        map = d3.select("#map");
+        mapGroup = d3.select("#mapGroup");
+        border = d3.select("#border")
+          .datum(borderData);
+        rentGroup = d3.select("#rentGroup");
+        water = d3.select("#water");
+        actWater = d3.select("#actWater")
+          .datum(actWaterData);
+        nswWater = d3.select("#nswWater")
+          .datum(nswWaterData);
+        // prepare graphic
+        projection = d3.geoConicEqualArea()
+          .parallels([-26.3, -44.3])
+          .rotate([-149.1, 0]);
+        path = d3.geoPath()
+          .projection(projection);
+        margin = { top: 15, right: 15, bottom: 15, left: 15 };
+        colourSwatches = [
+          "rgb(233, 242, 220)",
+          "rgb(191, 234, 208)",
+          "rgb(157, 222, 210)",
+          "rgb(125, 207, 211)",
+          "rgb(98, 192, 204)",
+          "rgb(69, 178, 196)",
+          "rgb(46, 163, 189)",
+          "rgb(35, 140, 171)",
+          "rgb(25, 118, 158)",
+          "rgb(17, 92, 148)",
+          "rgb(9, 67, 139)",
+          "rgb(4, 43, 115)",
+          "rgb(1, 19, 74)"
+        ];
+        legendBar.style("background-image", "linear-gradient(to right, " + colourSwatches.toString() + ")");
+        colours = d3.scaleLinear()
+          .range(colourSwatches)
+          .interpolate(d3.interpolateRgb);
+        axisScale = d3.scaleLinear();
+        axis = d3.axisBottom(axisScale)
+          .ticks(5)
+          .tickSizeOuter(0);
+        // resize and fade in
+        window.addEventListener("resize", resize);
+        d3.timeout(function() {
+          d3.select("body").transition()
+            .duration(500)
+            .style("opacity", 1);
+          display = "changes";
+          changeType("houses");
+        }, 500);
+      });
+      function resize() {
+        dimensions = document.getElementById("map").getBoundingClientRect();
+        width = dimensions.width;
+        height = dimensions.height;
+        optionsDisplay.style("bottom", (document.body.getBoundingClientRect().height - height + (width < 500 ? 5 : 10)) + "px");
+        projection.fitExtent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]], rentData);
+        mapGroup.selectAll("path")
+          .attr("d", path);
+        axisScale.range([10, width - 10]);
+        axisGroup.call(axis);
+      }
+      function changeType(input) {
+        type = input;
+        document.querySelectorAll("#optionsType .option")
+          .forEach(function(d) {
+            d.classList.toggle("selected");
+          });
+        changeColour();
+      }
+      function changeDisplay(input) {
+        display = input;
+        document.querySelectorAll("#optionsDisplay .option")
+          .forEach(function(d) {
+            d.classList.toggle("selected");
+          });
+        changeColour();
+      }
+      function changeColour() {
+        colourStops = [];
+        activeData = rentData
+          .features
+          .filter(function(d) {
+            return (d.properties.type == type) && d.properties[display];
+          });
+        extent = d3.extent(activeData, function(d) { return d.properties[display]; });
+        extentRange = extent[1] - extent[0];
+        for (i=0; i < colourSwatches.length; i = i + 1) {
+          colourStops.push(extent[0] + extentRange * i / (colourSwatches.length - 1));
+        }
+        colours.domain(colourStops);
+        axisScale.domain(extent);
+        axis.tickFormat(display == "changes" ? d3.format(".0%") : d3.format("$.0f"));
+        changeSuburbs();
+      }
+      function changeSuburbs() {
+        suburbs = rentGroup
+          .selectAll(".suburb")
+            .data(activeData);
+        suburbs.enter()
+          .append("path")
+            .classed("suburb", true)
+            .style("opacity", 1)
+            .style("fill", function(d) { return colours(d.properties[display]); });
+        suburbs.exit()
+          .remove();
+        suburbs.style("fill", function(d) { return colours(d.properties[display]); });
+        let text = (display == "changes") ?
+          "Changes in median rent during 2020" :
+          "Median rental prices in December 2020";
+        footer.select("span").text(text);
+        resize();
+      }
     </script>
   </body>
 </html>
