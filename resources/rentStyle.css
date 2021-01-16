@@ -93,6 +93,7 @@ body {
   margin-bottom: 5px;
   box-shadow: 1px 1px 3px #333;
   width: 80px;
+  cursor: pointer;
 }
 #optionsDisplay .option {
   margin-bottom: 0px;
