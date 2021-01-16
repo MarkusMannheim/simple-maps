@@ -57,13 +57,14 @@ body {
   width: 100%;
 }
 #border {
-  fill: #f2f2f2;
-  stroke: #666;
+  fill: none;
+  stroke: #999;
   stroke-dasharray: 2 2;
 }
 #water path {
   fill: #999;
   stroke: white;
+  pointer-events: none;
 }
 #legend {
   display: flex;
@@ -103,6 +104,11 @@ body {
 }
 .suburb {
   stroke: white;
+  pointer-events: none;
+}
+.suburb.selected {
+  stroke: #FFB300;
+  stroke-width: 2;
 }
 .domain {
   stroke: none;
@@ -114,6 +120,34 @@ body {
   fill: #666;
   font-size: .7rem;
 }
+h1, p {
+  margin: 0;
+}
+#tip {
+  pointer-events: none;
+  position: absolute;
+  opacity: 0;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px #333;
+  background: #333;
+  color: white;
+}
+#tip h1 {
+  font-size: .8rem;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
+}
+#tip p {
+  font-family: "ABCSans Light", "Arial Narrow", sans-serif;
+  font-size: .7rem;
+}
+#tip p span {
+  font-family: "ABCSans Regular", "Arial", sans-serif;
+  color: #FFB300;
+}
+.voronoi {
+  fill: rgba(0, 0, 0, 0);
+}
 @media only screen and (min-width: 500px) {
   .option {
     font-size: 1.1rem;
@@ -122,7 +156,7 @@ body {
   }
   #optionsDisplay .option {
     margin-bottom: 0px;
-    margin.top: 10px;
+    margin-top: 10px;
   }
   #footer {
     font-size: .8rem;

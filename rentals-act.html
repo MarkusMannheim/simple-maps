@@ -48,6 +48,7 @@
         <div class="option selected" onclick="changeDisplay('changes')">CHANGES</div>
         <div class="option" onclick="changeDisplay('prices')">PRICES</div>
       </div>
+      <div id="tip"></div>
     </div>
     <script>
       // load LGA data
@@ -59,15 +60,11 @@
       ]).then(function(data) {
         // parse and format data
         rentData = topojson.feature(data[0], data[0].objects.areas);
-        rentData.features
-          .forEach(function(d) {
-            d.properties.changes = (d.properties.dec2020 && d.properties.dec2019) ? (d.properties.dec2020 / d.properties.dec2019 - 1) : null;
-            d.properties.prices = d.properties.dec2020;
-          });
         borderData = topojson.feature(data[1], data[1].objects.areas);
         actWaterData = topojson.feature(data[2], data[2].objects.areas);
         nswWaterData = topojson.feature(data[3], data[3].objects.areas);
         // page elements
+        tip = d3.select("#tip");
         legend = d3.select("#legend");
         legendBar = d3.select("#legendBar");
         axis = d3.select("#axis");
@@ -132,10 +129,34 @@
         height = dimensions.height;
         optionsDisplay.style("bottom", (document.body.getBoundingClientRect().height - height + (width < 500 ? 5 : 10)) + "px");
         projection.fitExtent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]], rentData);
-        mapGroup.selectAll("path")
-          .attr("d", path);
         axisScale.range([10, width - 10]);
         axisGroup.call(axis);
+        delaunay = d3.Delaunay.from(activeData.map(function(d) {
+          return projection(d.properties.centroid);
+        }));
+        voronoi = delaunay.voronoi([0, 0, width, height]);
+        rents = rentGroup
+          .selectAll(".rent")
+            .data(activeData, function(d) { return d.properties.area});
+        entering = rents
+          .enter().append("g")
+            .classed("rent", true);
+        entering.append("path")
+          .classed("suburb", true)
+          .style("fill", function(d) { return colours(d.properties[display]); });
+        entering.append("path")
+          .classed("voronoi", true)
+          .attr("d", function(d) { return d3.line()(voronoi.cellPolygon(d.properties.i)) + "z"; })
+          .on("mouseover", mouseover)
+          .on("mouseout", mouseout);
+        rents.exit()
+          .remove();
+        rents.select(".suburb")
+          .style("fill", function(d) { return colours(d.properties[display]); });
+        rents.select(".voronoi")
+          .attr("d", function(d) { return d3.line()(voronoi.cellPolygon(d.properties.i)) + "z"; });
+        mapGroup.selectAll(".suburb, #border, #water path")
+          .attr("d", path);
       }
       function changeType(input) {
         type = input;
@@ -159,6 +180,10 @@
           .features
           .filter(function(d) {
             return (d.properties.type == type) && d.properties[display];
+          })
+          .map(function(d, i) {
+            d.properties.i = i;
+            return d;
           });
         extent = d3.extent(activeData, function(d) { return d.properties[display]; });
         extentRange = extent[1] - extent[0];
@@ -171,22 +196,42 @@
         changeSuburbs();
       }
       function changeSuburbs() {
-        suburbs = rentGroup
-          .selectAll(".suburb")
-            .data(activeData);
-        suburbs.enter()
-          .append("path")
-            .classed("suburb", true)
-            .style("opacity", 1)
-            .style("fill", function(d) { return colours(d.properties[display]); });
-        suburbs.exit()
-          .remove();
-        suburbs.style("fill", function(d) { return colours(d.properties[display]); });
         let text = (display == "changes") ?
           "Changes in median rent during 2020" :
           "Median rental prices in December 2020";
         footer.select("span").text(text);
         resize();
+      }
+      function mouseover(d) {
+        d3.select(this.parentNode)
+          .raise()
+          .each(function(d) { datum = d.properties; })
+          .select(".suburb")
+            .classed("selected", true);
+        tip.style("opacity", 0)
+          .html("<h1>" + datum.area + "</h1>"
+              + "<p>median rent: <span>" + d3.format("$.0f")(datum.prices) + "</span></p>"
+              + "<p>change in 12mths: <span>" + d3.format(".1%")(datum.changes) + "</span></p>");
+        let tipSize = document.getElementById("tip").getBoundingClientRect();
+        let centroid = projection(datum.centroid);
+        tip.style("top", function() {
+            return (centroid[1] + 15 + tipSize.height > height) ?
+              centroid[1] - 15 - tipSize.height + "px" :
+              centroid[1] + 15 + "px";
+          })
+          .style("left", function() {
+            return (centroid[0] - tipSize.width / 2 - 15 < 0) ?
+              "15px" :
+              (centroid[0] + tipSize.width / 2 + 15 > width) ?
+              width - 15 - tipSize.width + "px":
+              centroid[0] - tipSize.width / 2 + "px";
+          })
+          .style("opacity", 1);
+      }
+      function mouseout() {
+        d3.selectAll(".suburb")
+          .classed("selected", false);
+        tip.style("opacity", 0);
       }
     </script>
   </body>
