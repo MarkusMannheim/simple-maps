@@ -47,23 +47,32 @@ body, #map {
   position: fixed;
   bottom: .5rem;
   left: .5rem;
-  text-shadow: 2px 2px 3px white;
+  color: white;  
   font-size: .9rem;
-  font-weight: bold;
 }
 .legend {
   display: flex;
+}
+.legend:last-child {
   margin-top: .25rem;
 }
 .label {
   line-height: 1rem;
 }
+
 .box {
   width: 1rem;
   height: 1rem;
-  margin-right: .5rem;
+  border: solid .5px white;
+}
+.box:first-child {
+  margin-right: .25rem;
+}
+#footer {
+  background: #333;
+  padding: .25rem;
   box-shadow: 2px 2px 3px white;
-  opacity: .5;
+  box-sizing: border-box;
 }
 #stayKey .box {
   background: #FF6100;
@@ -77,14 +86,20 @@ body, #map {
     left: 2rem;
     font-size: 1rem;
   }
-  .legend {
+  .legend:last-child {
     margin-top: .5rem;
   }
   .label {
     line-height: 1.25rem;
   }
+  .box:first-child {
+    margin-right: .5rem;
+  }
   .box {
     width: 1.25rem;
     height: 1.25rem;
+  }
+  #footer {
+   padding: .5rem; 
   }
 }
