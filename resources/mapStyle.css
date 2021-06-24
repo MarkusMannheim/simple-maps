@@ -35,19 +35,23 @@ green: #00A388
 body {
   opacity: 0;
 }
-body, #map {
+body {
   margin: 0;
   position: fixed;
   top: 0;
-  bottom: 0;
+  bottom: 1rem;
   left: 0;
   right: 0;
+  display: flex;
+}
+#map {
+  width: 100%;
 }
 #footer {
   position: fixed;
   bottom: .5rem;
   left: .5rem;
-  color: white;  
+  color: white;
   font-size: .9rem;
 }
 .legend {
@@ -84,22 +88,5 @@ body, #map {
  #footer {
     bottom: 2rem;
     left: 2rem;
-    font-size: 1rem;
-  }
-  .legend:last-child {
-    margin-top: .5rem;
-  }
-  .label {
-    line-height: 1.25rem;
-  }
-  .box:first-child {
-    margin-right: .5rem;
-  }
-  .box {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-  #footer {
-   padding: .5rem; 
   }
 }
