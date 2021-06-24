@@ -1,53 +1,94 @@
 const d3 = require("d3"),
       fs = require("fs");
 
-var councils = [
-  "Northern Beaches",
+var areas = [
+  "Blue Mountains",
   "Blacktown",
-  "Burwood",
-  "Canada Bay",
-  "Canterbury-Bankstown",
+  "Bayside",
+  "Hornsby",
+  "Georges River",
+  "Hawkesbury",
   "Cumberland",
-  "Fairfield",
-  "Inner West",
-  "Liverpool",
+  "Burwood",
+  "Hunters Hill",
+  "Canterbury-Bankstown",
+  "Central Coast",
+  "Wollongong",
+  "Shellharbour",
+  "Penrith",
   "Parramatta",
-  "Strathfield"  
+  "Canada Bay",
+  "Ku-ring-gai",
+  "Sutherland Shire",
+  "Camden",
+  "The Hills Shire",
+  "Inner West",
+  "Lane Cove",
+  "Campbelltown",
+  "Randwick",
+  "Northern Beaches",
+  "Fairfield",
+  "Strathfield",
+  "Mosman",
+  "Liverpool",
+  "Woollahra",
+  "Willoughby",
+  "Wollondilly",
+  "Waverley",
+  "Ryde",
+  "Sydney",
+  "North Sydney"
 ];
 
-fs.readFile("lga.geojson", "utf8", function(error, data) {
+var affected = [
+  "Sydney", "Waverley", "Randwick", "Canada Bay", "Inner West", "Bayside", "Woollahra"
+];
+
+for (i = 0; i < areas.length; i++) {
+  if (affected.includes(areas[i])) areas.splice(i, 1);
+}
+
+fs.readFile("lgaBoundaries.geojson", "utf8", function(error, data) {
   if (error) throw error;
 
   var geoData = JSON
     .parse(data)
     .features
+
     .filter(function(d) {
       return d.properties.STE_CODE16 == "1";
     })
     .map(function(d) {
       d.properties = {
-        lga: d.properties.LGA_NAME20.replace(" (A)", "").replace(" (C)", "")
+        lga: d.properties.LGA_NAME20.replace(" (A)", "").replace(" (C)", "").replace(" (NSW)", "")
       };
       return d;
     });
 
-  lgaData = {
+  mapData = {
     type: "FeatureCollection",
     features: []
   };
-  councils.forEach(function(council) {
-    let matches = geoData
-      .filter(function(d) {
-        return (council == "Sydney" || council == "Liverpool") ?
-        d.properties.lga == council :
-        d.properties.lga.includes(council);
+
+  areas.forEach(function(d) {
+    let match = geoData
+      .filter(function(e) {
+        return e.properties.lga == d;
       });
-    console.log("Searching", council, "...", matches.length, "matches\n"
-              + matches.map(function(d) { return d.properties.lga; }));
-    lgaData.features.push(matches[0]);
+    match[0].properties.class = "watch";
+    mapData.features.push(match[0]);
   });
 
-  fs.writeFile("lgaData.geojson", JSON.stringify(lgaData), function(error) {
+  affected.forEach(function(d) {
+    let match = geoData
+      .filter(function(e) {
+        return e.properties.lga == d;
+      });
+    match[0].properties.class = "stay";
+    mapData.features.push(match[0]);
+  });
+
+  fs.writeFile("lgaData.geojson", JSON.stringify(mapData), function(error) {
     console.log("lgaData.geojson written");
   });
 });

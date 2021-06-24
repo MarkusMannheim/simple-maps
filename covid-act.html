@@ -17,18 +17,42 @@
     <!-- Initial scripts -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
     <link href="./resources/mapStyle.css" rel="stylesheet">
     <link href="./resources/abcLogo64.png" rel="icon">
   </head>
   <body>
     <div id="map"></div>
+    <div id="footer">
+      <div id="stayKey" class="legend">
+        <div class="box"></div>
+        <div class="label">stay-at-home orders</div>
+      </div>
+      <div id="watchKey" class="legend">
+        <div class="box"></div>
+        <div class="label">watch and assess</div>
+      </div>
+    </div>
     <script>
       // load LGA data
-      d3.json("./data/lgaData.topojson")
+      d3.json("./data/lgaMap.topojson")
         .then(function(data) {
-          lgas = topojson.feature(data, data.objects.lgas);
+          lgaData = topojson.feature(data, data.objects.lgas);
+          watchData = {
+            type: "FeatureCollection",
+            features: lgaData
+              .features.filter(function(d) {
+                return d.properties.class == "watch";
+              })
+          };
+          stayData = {
+            type: "FeatureCollection",
+            features: lgaData
+              .features.filter(function(d) {
+                return d.properties.class == "stay";
+              })
+          };
           // set up MapBox engine
           mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
           map = new mapboxgl.Map({
@@ -46,16 +70,30 @@
                 customAttribution: "ACT Health (COVID-19 advice), ABS (LGA boundaries)"
               }))
               // add GeoJSON
-              .addSource("lgas", {
+              .addSource("watchSource", {
                 type: "geojson",
-                data: lgas
+                data: watchData
               })
               .addLayer({
-                id: "lgas",
+                id: "watch",
                 type: "fill",
-                source: "lgas",
+                source: "watchSource",
                 paint: {
                   "fill-color": "#01CFFF",
+                  "fill-opacity": .5,
+                  "fill-outline-color": "white"
+                }
+              })
+              .addSource("staySource", {
+                type: "geojson",
+                data: stayData
+              })
+              .addLayer({
+                id: "stay",
+                type: "fill",
+                source: "staySource",
+                paint: {
+                  "fill-color": "#FF6100",
                   "fill-opacity": .5,
                   "fill-outline-color": "white"
                 }
@@ -67,7 +105,7 @@
                 .style("opacity", 1);
             // transition to LGAs
             d3.timeout(function() {
-              bounds = d3.geoBounds(lgas);
+              bounds = d3.geoBounds(lgaData);
               map.fitBounds(bounds, {
                 padding: 80,
                 duration: 5000,
