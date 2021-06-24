@@ -63,7 +63,7 @@ body, #map {
   height: 1rem;
   margin-right: .5rem;
   box-shadow: 2px 2px 3px white;
-  opacity: .5rem;
+  opacity: .5;
 }
 #stayKey .box {
   background: #FF6100;
