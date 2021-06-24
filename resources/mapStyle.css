@@ -85,8 +85,11 @@ body {
   background: #01CFFF;
 }
 @media only screen and (min-width: 650px) {
- #footer {
-    bottom: 3rem;
+  #footer {
+    bottom: 2rem;
     left: 2rem;
+  }
+  body {
+    bottom: 0;
   }
 }
