@@ -71,7 +71,7 @@ body, #map {
 #watchKey .box {
   background: #01CFFF;
 }
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 650px) {
  #footer {
     bottom: 2rem;
     left: 2rem;
