@@ -86,7 +86,7 @@ body {
 }
 @media only screen and (min-width: 650px) {
  #footer {
-    bottom: 2rem;
+    bottom: 3rem;
     left: 2rem;
   }
 }
