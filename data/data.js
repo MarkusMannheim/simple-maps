@@ -7,7 +7,7 @@ var areas = [
   ["Bayside", "sydney"],
   ["Hornsby", "sydney"],
   ["Georges River", "sydney"],
-  ["Hawkesbury", "sydney"],
+  ["Hawkesbury", "area"],
   ["Cumberland", "sydney"],
   ["Burwood", "sydney"],
   ["Hunters Hill", "sydney"],
