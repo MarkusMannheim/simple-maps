@@ -33,7 +33,7 @@ var areas = [
   ["Liverpool", "sydney"],
   ["Woollahra", "sydney"],
   ["Willoughby", "sydney"],
-  ["Wollondilly", "sydney"],
+  ["Wollondilly", "area"],
   ["Waverley", "sydney"],
   ["Ryde", "sydney"],
   ["Sydney", "sydney"],
