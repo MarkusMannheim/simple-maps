@@ -56,14 +56,14 @@ body {
 }
 .legend {
   display: flex;
-}
-.legend:last-child {
   margin-top: .25rem;
+}
+.legend:first-child {
+  margin-top: 0;
 }
 .label {
   line-height: 1rem;
 }
-
 .box {
   width: 1rem;
   height: 1rem;
@@ -81,8 +81,11 @@ body {
 #stayKey .box {
   background: #FF6100;
 }
-#watchKey .box {
+#sydneyKey .box {
   background: #01CFFF;
+}
+#watchKey .box {
+  background: #00B395;
 }
 @media only screen and (min-width: 650px) {
   #footer {
