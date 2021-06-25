@@ -29,10 +29,6 @@
         <div class="box"></div>
         <div class="label">stay-at-home orders</div>
       </div>
-      <div id="sydneyKey" class="legend">
-        <div class="box"></div>
-        <div class="label">do not travel</div>
-      </div>
       <div id="watchKey" class="legend">
         <div class="box"></div>
         <div class="label">watch and assess</div>
@@ -47,21 +43,14 @@
             type: "FeatureCollection",
             features: lgaData
               .features.filter(function(d) {
-                return d.properties.class == "area";
-              })
-          };
-          sydneyData = {
-            type: "FeatureCollection",
-            features: lgaData
-              .features.filter(function(d) {
-                return d.properties.class == "sydney";
+                return d.properties.class == "watch";
               })
           };
           stayData = {
             type: "FeatureCollection",
             features: lgaData
               .features.filter(function(d) {
-                return d.properties.class == "affected";
+                return d.properties.class == "stay";
               })
           };
           // set up MapBox engine
@@ -90,7 +79,7 @@
                 type: "fill",
                 source: "watchSource",
                 paint: {
-                  "fill-color": "#00B395",
+                  "fill-color": "#01CFFF",
                   "fill-opacity": .5,
                   "fill-outline-color": "white"
                 }
@@ -105,20 +94,6 @@
                 source: "staySource",
                 paint: {
                   "fill-color": "#FF6100",
-                  "fill-opacity": .5,
-                  "fill-outline-color": "white"
-                }
-              })
-              .addSource("sydneySource", {
-                type: "geojson",
-                data: sydneyData
-              })
-              .addLayer({
-                id: "sydney",
-                type: "fill",
-                source: "sydneySource",
-                paint: {
-                  "fill-color": "#01CFFF",
                   "fill-opacity": .5,
                   "fill-outline-color": "white"
                 }

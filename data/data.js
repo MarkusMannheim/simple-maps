@@ -2,51 +2,43 @@ const d3 = require("d3"),
       fs = require("fs");
 
 var areas = [
-  ["Blue Mountains", "sydney"],
-  ["Blacktown", "sydney"],
-  ["Bayside", "sydney"],
-  ["Hornsby", "sydney"],
-  ["Georges River", "sydney"],
-  ["Hawkesbury", "area"],
-  ["Cumberland", "sydney"],
-  ["Burwood", "sydney"],
-  ["Hunters Hill", "sydney"],
-  ["Canterbury-Bankstown", "sydney"],
-  ["Central Coast", "area"],
-  ["Wollongong", "area"],
-  ["Shellharbour", "area"],
-  ["Penrith", "sydney"],
-  ["Parramatta", "sydney"],
-  ["Canada Bay", "sydney"],
-  ["Ku-ring-gai", "sydney"],
-  ["Sutherland Shire", "sydney"],
-  ["Camden", "sydney"],
-  ["The Hills Shire", "sydney"],
-  ["Inner West", "sydney"],
-  ["Lane Cove", "sydney"],
-  ["Campbelltown", "sydney"],
-  ["Randwick", "sydney"],
-  ["Northern Beaches", "sydney"],
-  ["Fairfield", "sydney"],
-  ["Strathfield", "sydney"],
-  ["Mosman", "sydney"],
-  ["Liverpool", "sydney"],
-  ["Woollahra", "sydney"],
-  ["Willoughby", "sydney"],
-  ["Wollondilly", "area"],
-  ["Waverley", "sydney"],
-  ["Ryde", "sydney"],
-  ["Sydney", "sydney"],
-  ["North Sydney", "sydney"]
+  ["Blue Mountains", "stay"],
+  ["Blacktown", "stay"],
+  ["Bayside", "stay"],
+  ["Hornsby", "stay"],
+  ["Georges River", "stay"],
+  ["Hawkesbury", "watch"],
+  ["Cumberland", "stay"],
+  ["Burwood", "stay"],
+  ["Hunters Hill", "stay"],
+  ["Canterbury-Bankstown", "stay"],
+  ["Central Coast", "watch"],
+  ["Wollongong", "watch"],
+  ["Shellharbour", "watch"],
+  ["Penrith", "stay"],
+  ["Parramatta", "stay"],
+  ["Canada Bay", "stay"],
+  ["Ku-ring-gai", "stay"],
+  ["Sutherland Shire", "stay"],
+  ["Camden", "stay"],
+  ["The Hills Shire", "stay"],
+  ["Inner West", "stay"],
+  ["Lane Cove", "stay"],
+  ["Campbelltown", "stay"],
+  ["Randwick", "stay"],
+  ["Northern Beaches", "stay"],
+  ["Fairfield", "stay"],
+  ["Strathfield", "stay"],
+  ["Mosman", "stay"],
+  ["Liverpool", "stay"],
+  ["Woollahra", "stay"],
+  ["Willoughby", "stay"],
+  ["Wollondilly", "watch"],
+  ["Waverley", "stay"],
+  ["Ryde", "stay"],
+  ["Sydney", "stay"],
+  ["North Sydney", "stay"]
 ];
-
-var affected = [
-  "Sydney", "Waverley", "Randwick", "Canada Bay", "Inner West", "Bayside", "Woollahra"
-];
-
-for (i = 0; i < areas.length; i++) {
-  if (affected.includes(areas[i])) areas.splice(i, 1);
-}
 
 fs.readFile("lgaBoundaries.geojson", "utf8", function(error, data) {
   if (error) throw error;
@@ -75,15 +67,6 @@ fs.readFile("lgaBoundaries.geojson", "utf8", function(error, data) {
         return e.properties.lga == d[0];
       });
     match[0].properties.class = d[1];
-    mapData.features.push(match[0]);
-  });
-
-  affected.forEach(function(d) {
-    let match = geoData
-      .filter(function(e) {
-        return e.properties.lga == d;
-      });
-    match[0].properties.class = "affected";
     mapData.features.push(match[0]);
   });
 

@@ -81,11 +81,8 @@ body {
 #stayKey .box {
   background: #FF6100;
 }
-#sydneyKey .box {
-  background: #01CFFF;
-}
 #watchKey .box {
-  background: #00B395;
+  background: #01CFFF;
 }
 @media only screen and (min-width: 650px) {
   #footer {
