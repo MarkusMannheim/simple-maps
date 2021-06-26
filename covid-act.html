@@ -29,30 +29,30 @@
         <div class="box"></div>
         <div class="label">stay-at-home orders</div>
       </div>
-      <div id="watchKey" class="legend">
+      <!-- <div id="watchKey" class="legend">
         <div class="box"></div>
         <div class="label">watch and assess</div>
-      </div>
+      </div> -->
     </div>
     <script>
       // load LGA data
       d3.json("./data/lgaMap.topojson")
         .then(function(data) {
           lgaData = topojson.feature(data, data.objects.lgas);
-          watchData = {
-            type: "FeatureCollection",
-            features: lgaData
-              .features.filter(function(d) {
-                return d.properties.class == "watch";
-              })
-          };
-          stayData = {
-            type: "FeatureCollection",
-            features: lgaData
-              .features.filter(function(d) {
-                return d.properties.class == "stay";
-              })
-          };
+          // watchData = {
+          //   type: "FeatureCollection",
+          //   features: lgaData
+          //     .features.filter(function(d) {
+          //       return d.properties.class == "watch";
+          //     })
+          // };
+          // stayData = {
+          //   type: "FeatureCollection",
+          //   features: lgaData
+          //     .features.filter(function(d) {
+          //       return d.properties.class == "stay";
+          //     })
+          // };
           // set up MapBox engine
           mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
           map = new mapboxgl.Map({
@@ -70,30 +70,31 @@
                 customAttribution: "ACT Health (COVID-19 advice), ABS (LGA boundaries)"
               }))
               // add GeoJSON
-              .addSource("watchSource", {
-                type: "geojson",
-                data: watchData
-              })
-              .addLayer({
-                id: "watch",
-                type: "fill",
-                source: "watchSource",
-                paint: {
-                  "fill-color": "#01CFFF",
-                  "fill-opacity": .5,
-                  "fill-outline-color": "white"
-                }
-              })
+              // .addSource("watchSource", {
+              //   type: "geojson",
+              //   data: watchData
+              // })
+              // .addLayer({
+              //   id: "watch",
+              //   type: "fill",
+              //   source: "watchSource",
+              //   paint: {
+              //     "fill-color": "#01CFFF",
+              //     "fill-opacity": .5,
+              //     "fill-outline-color": "white"
+              //   }
+              // })
               .addSource("staySource", {
                 type: "geojson",
-                data: stayData
+                // data: stayData
+                data: lgaData
               })
               .addLayer({
                 id: "stay",
                 type: "fill",
                 source: "staySource",
                 paint: {
-                  "fill-color": "#FF6100",
+                  "fill-color": "#01CFFF",
                   "fill-opacity": .5,
                   "fill-outline-color": "white"
                 }
