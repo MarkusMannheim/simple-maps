@@ -29,30 +29,12 @@
         <div class="box"></div>
         <div class="label">stay-at-home orders</div>
       </div>
-      <!-- <div id="watchKey" class="legend">
-        <div class="box"></div>
-        <div class="label">watch and assess</div>
-      </div> -->
     </div>
     <script>
       // load LGA data
-      d3.json("./data/lgaMap.topojson")
+      d3.json("./data/lga-covid.topojson")
         .then(function(data) {
-          lgaData = topojson.feature(data, data.objects.lgas);
-          // watchData = {
-          //   type: "FeatureCollection",
-          //   features: lgaData
-          //     .features.filter(function(d) {
-          //       return d.properties.class == "watch";
-          //     })
-          // };
-          // stayData = {
-          //   type: "FeatureCollection",
-          //   features: lgaData
-          //     .features.filter(function(d) {
-          //       return d.properties.class == "stay";
-          //     })
-          // };
+          lgaData = topojson.feature(data, data.objects.areas);
           // set up MapBox engine
           mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
           map = new mapboxgl.Map({
@@ -60,7 +42,7 @@
             attributionControl: false,
             style: "mapbox://styles/mapbox/light-v10",
             center: [149.126944, -35.293056],
-            zoom: 8
+            zoom: 11
           });
           map.on("load", function() {
             // add navigation and custom attribution
@@ -69,24 +51,8 @@
                 compact: true,
                 customAttribution: "ACT Health (COVID-19 advice), ABS (LGA boundaries)"
               }))
-              // add GeoJSON
-              // .addSource("watchSource", {
-              //   type: "geojson",
-              //   data: watchData
-              // })
-              // .addLayer({
-              //   id: "watch",
-              //   type: "fill",
-              //   source: "watchSource",
-              //   paint: {
-              //     "fill-color": "#01CFFF",
-              //     "fill-opacity": .5,
-              //     "fill-outline-color": "white"
-              //   }
-              // })
               .addSource("staySource", {
                 type: "geojson",
-                // data: stayData
                 data: lgaData
               })
               .addLayer({
@@ -106,7 +72,10 @@
                 .style("opacity", 1);
             // transition to LGAs
             d3.timeout(function() {
-              bounds = d3.geoBounds(lgaData);
+              bounds = [
+                [ 129.0013369930001, -39.159189527999956 ],
+                [ 151.63054702400007, -25.998562531999937 ]
+              ];
               map.fitBounds(bounds, {
                 padding: 32,
                 duration: 3500,
