@@ -37,17 +37,38 @@ var areas = [
   "Waverley",
   "Ryde",
   "Sydney",
-  "North Sydney"
+  "North Sydney",
+  "Brisbane",
+  "Gold Coast",
+  "Ipswich",
+  "Lockyer Valley",
+  "Logan",
+  "Moreton Bay",
+  "Noosa",
+  "Redland",
+  "Scenic Rim",
+  "Somerset",
+  "Sunshine Coast",
+  "Newcastle",
+  "Cessnock",
+  "Dungog",
+  "Lake Macquarie",
+  "Maitland",
+  "Muswellbrook",
+  "Port Stephens",
+  "Singleton"
 ];
 
-fs.readFile("areas.geojson", "utf8", function(error, data) {
+fs.readFile("lga.geojson", "utf8", function(error, data) {
   if (error) throw error;
 
   var geoData = JSON
     .parse(data)
     .features
     .filter(function(d) {
-      return d.properties.area > 0;
+      return d.properties.area > 0 &&
+        (d.properties.state == "3" ||
+        d.properties.state == "1");
     })
     .map(function(d) {
       let test = d.properties.name.indexOf(" (");
@@ -72,6 +93,7 @@ fs.readFile("areas.geojson", "utf8", function(error, data) {
       .filter(function(e) {
         return e.properties.name == d;
       });
+    if (match.length !== 1) console.log(d, match);
     mapData.features.push(match[0]);
   });
 
