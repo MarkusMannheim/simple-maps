@@ -72,7 +72,10 @@
                 .style("opacity", 1);
             // transition to LGAs
             d3.timeout(function() {
-              bounds = d3.geoBounds(lgaData);
+              bounds = [
+                [ 148.35979009000005, -35.644618357999946 ],
+                [ 153.54670756200005, -26.137120797999955 ]
+              ];
               map.fitBounds(bounds, {
                 padding: 32,
                 duration: 3500,
