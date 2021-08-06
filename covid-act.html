@@ -73,11 +73,16 @@
             // transition to LGAs
             d3.timeout(function() {
               bounds = [
-                [ 148.35979009000005, -35.644618357999946 ],
+                [ 140.96168199600004, -39.159189527999956 ],
                 [ 153.54670756200005, -26.137120797999955 ]
               ];
+              zoomBounds = document.body.getBoundingClientRect().width < 500 ?
+                { top: 32, right: 16, bottom: 16, left: 16 } :
+                document.body.getBoundingClientRect().width < 638 ?
+                { top: 48, right: 32, bottom: 32, left: 32 } :
+                { top: 64, right: 32, bottom: 32, left: 32 };
               map.fitBounds(bounds, {
-                padding: 32,
+                padding: zoomBounds,
                 duration: 3500,
                 essential: true
               });
