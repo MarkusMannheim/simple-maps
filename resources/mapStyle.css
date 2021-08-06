@@ -29,7 +29,7 @@ green: #00A388
 }
 :root {
   font-size: 1em;
-  font-family: "ABCSans Regular", "Arial", sans-serif;
+  font-family: "ABCSans Black", "Arial Black", sans-serif;
   color: #1C1C1C;
 }
 body {
@@ -39,7 +39,7 @@ body {
   margin: 0;
   position: fixed;
   top: 0;
-  bottom: 1rem;
+  bottom: .5rem;
   left: 0;
   right: 0;
   display: flex;
@@ -49,10 +49,13 @@ body {
 }
 #footer {
   position: fixed;
-  bottom: 1.5rem;
+  top: .5rem;
   left: .5rem;
   color: white;
-  font-size: .9rem;
+  background: #333;
+  padding: .25rem;
+  box-shadow: 2px 2px 3px white;
+  box-sizing: border-box;
 }
 .legend {
   display: flex;
@@ -72,12 +75,7 @@ body {
 .box:first-child {
   margin-right: .25rem;
 }
-#footer {
-  background: #333;
-  padding: .25rem;
-  box-shadow: 2px 2px 3px white;
-  box-sizing: border-box;
-}
+
 #stayKey .box {
   /* background: #FF6100; */
   background: #01CFFF;
@@ -85,12 +83,31 @@ body {
 #watchKey .box {
   background: #01CFFF;
 }
-@media only screen and (min-width: 650px) {
+@media only screen and (min-width: 638px) {
   #footer {
-    bottom: 2rem;
+    top: 1rem;
+    left: 1rem;
+  }
+}
+@media only screen and (min-width: 639px) {
+  #footer {
+    top: 2rem;
     left: 2rem;
+    font-size: 1.25rem;
+    padding: .5rem;
   }
   body {
     bottom: 0;
   }
+  .label {
+    line-height: 1.25rem;
+  }
+  .box {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .box:first-child {
+    margin-right: .5rem;
+  }
+
 }
