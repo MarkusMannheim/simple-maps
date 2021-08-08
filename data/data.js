@@ -59,12 +59,14 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     .filter(function(d) {
       return d.properties.AREASQKM20 > 0 &&
         (d.properties.STE_CODE16 == "3" ||
+        d.properties.STE_CODE16 == "2" ||
         d.properties.STE_CODE16 == "1");
     })
     .map(function(d) {
       let test = d.properties.LGA_NAME20.indexOf(" (");
       d.properties = {
         class: "lga",
+        state: d.properties.STE_CODE16,
         name: (
           test > -1 ?
           d.properties.LGA_NAME20.slice(0, test) :
@@ -79,26 +81,45 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     features: []
   };
 
-  areas.forEach(function(d) {
-    let match = geoData
-      .filter(function(e) {
-        return e.properties.name == d;
+  // areas.forEach(function(d) {
+  //   let match = geoData
+  //     .filter(function(e) {
+  //       return e.properties.name == d;
+  //     });
+  //   if (match.length !== 1) console.log(d, match);
+  //   mapData.features.push({
+  //     type: "Feature",
+  //     geometry: match[0].geometry,
+  //     properties: {
+  //       class: "lga"
+  //     }
+  //   });
+  // });
+
+  geoData.forEach(function(d) {
+    if (areas.includes(d.properties.name) || d.properties.state == "2") {
+      mapData.features.push({
+        type: "Feature",
+        geometry: d.geometry,
+        properties: {
+          class: "lga"
+        }
       });
-    if (match.length !== 1) console.log(d, match);
-    mapData.features.push(match[0]);
+    }
   });
 
   fs.writeFile("lga-covid.geojson", JSON.stringify(mapData), function(error) {
     console.log("lga-covid.geojson written");
   });
 
-  boundaryAreas = ["Cairns", "Dungog", "Shoalhaven"];
+  boundaryAreas = [];
 
   console.log(d3.geoBounds({
     type: "FeatureCollection",
     features: geoData
       .filter(function(d) {
-        return boundaryAreas.includes(d.properties.name);
+        return d.properties.name == "Cairns" ||
+          d.properties.state == "2";
       })
   }));
 });
