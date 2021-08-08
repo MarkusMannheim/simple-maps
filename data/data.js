@@ -38,17 +38,6 @@ var areas = [
   "Ryde",
   "Sydney",
   "North Sydney",
-  "Brisbane",
-  "Gold Coast",
-  "Ipswich",
-  "Lockyer Valley",
-  "Logan",
-  "Moreton Bay",
-  "Noosa",
-  "Redland",
-  "Scenic Rim",
-  "Somerset",
-  "Sunshine Coast",
   "Newcastle",
   "Cessnock",
   "Dungog",
@@ -56,7 +45,9 @@ var areas = [
   "Maitland",
   "Muswellbrook",
   "Port Stephens",
-  "Singleton"
+  "Singleton",
+  "Cairns",
+  "Yarrabah"
 ];
 
 fs.readFile("lga.geojson", "utf8", function(error, data) {
@@ -66,18 +57,18 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     .parse(data)
     .features
     .filter(function(d) {
-      return d.properties.area > 0 &&
-        (d.properties.state == "3" ||
-        d.properties.state == "1");
+      return d.properties.AREASQKM20 > 0 &&
+        (d.properties.STE_CODE16 == "3" ||
+        d.properties.STE_CODE16 == "1");
     })
     .map(function(d) {
-      let test = d.properties.name.indexOf(" (");
+      let test = d.properties.LGA_NAME20.indexOf(" (");
       d.properties = {
         class: "lga",
         name: (
           test > -1 ?
-          d.properties.name.slice(0, test) :
-          d.properties.name
+          d.properties.LGA_NAME20.slice(0, test) :
+          d.properties.LGA_NAME20
         )
       };
       return d;
@@ -100,4 +91,14 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
   fs.writeFile("lga-covid.geojson", JSON.stringify(mapData), function(error) {
     console.log("lga-covid.geojson written");
   });
+
+  boundaryAreas = ["Cairns", "Dungog", "Shoalhaven"];
+
+  console.log(d3.geoBounds({
+    type: "FeatureCollection",
+    features: geoData
+      .filter(function(d) {
+        return boundaryAreas.includes(d.properties.name);
+      })
+  }));
 });
