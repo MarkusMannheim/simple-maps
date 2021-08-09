@@ -2,52 +2,61 @@ const d3 = require("d3"),
       fs = require("fs");
 
 var areas = [
-  "Blue Mountains",
-  "Blacktown",
+  // greater sydney
   "Bayside",
-  "Hornsby",
-  "Georges River",
-  "Hawkesbury",
-  "Cumberland",
+  "Blacktown",
+  "Blue Mountains",
   "Burwood",
-  "Hunters Hill",
+  "Camden",
+  "Campbelltown",
+  "Canada Bay",
   "Canterbury-Bankstown",
   "Central Coast",
-  "Wollongong",
-  "Shellharbour",
-  "Penrith",
-  "Parramatta",
-  "Canada Bay",
-  "Ku-ring-gai",
-  "Sutherland Shire",
-  "Camden",
-  "The Hills Shire",
-  "Inner West",
-  "Lane Cove",
-  "Campbelltown",
-  "Randwick",
-  "Northern Beaches",
+  "Cumberland",
   "Fairfield",
-  "Strathfield",
-  "Mosman",
+  "Georges River",
+  "Hawkesbury",
+  "Hornsby",
+  "Hunters Hill",
+  "Inner West",
+  "Ku-ring-gai",
+  "Lane Cove",
   "Liverpool",
-  "Woollahra",
+  "Mosman",
+  "North Sydney",
+  "Northern Beaches",
+  "Parramatta",
+  "Penrith",
+  "Randwick",
+  "Ryde",
+  "Shellharbour",
+  "Strathfield",
+  "Sutherland Shire",
+  "Sydney",
+  "The Hills Shire",
+  "Waverley",
   "Willoughby",
   "Wollondilly",
-  "Waverley",
-  "Ryde",
-  "Sydney",
-  "North Sydney",
-  "Newcastle",
+  "Wollongong",
+  "Woollahra",
+  // nth qld
+  "Cairns",
+  "Yarrabah",
+  // regional nsw
+  "Armidale Regional",
   "Cessnock",
-  "Dungog",
+  "Coffs Harbour",
+  "Dubbo Regional",
+  "Dungog Shire",
   "Lake Macquarie",
   "Maitland",
-  "Muswellbrook",
+  "Mid-Western Regional",
+  "Muswellbrook Shire",
+  "Newcastle",
   "Port Stephens",
+  "Shoalhaven",
   "Singleton",
-  "Cairns",
-  "Yarrabah"
+  "Wingecarribee Shire"
 ];
 
 fs.readFile("lga.geojson", "utf8", function(error, data) {
@@ -57,20 +66,20 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     .parse(data)
     .features
     .filter(function(d) {
-      return d.properties.AREASQKM20 > 0 &&
-        (d.properties.STE_CODE16 == "3" ||
-        d.properties.STE_CODE16 == "2" ||
-        d.properties.STE_CODE16 == "1");
+      return d.properties.area > 0 &&
+        (d.properties.state == "3" ||
+        d.properties.state == "2" ||
+        d.properties.state == "1");
     })
     .map(function(d) {
-      let test = d.properties.LGA_NAME20.indexOf(" (");
+      let test = d.properties.name.indexOf(" (");
       d.properties = {
         class: "lga",
-        state: d.properties.STE_CODE16,
+        state: d.properties.state,
         name: (
           test > -1 ?
-          d.properties.LGA_NAME20.slice(0, test) :
-          d.properties.LGA_NAME20
+          d.properties.name.slice(0, test) :
+          d.properties.name
         )
       };
       return d;
@@ -119,6 +128,7 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     features: geoData
       .filter(function(d) {
         return d.properties.name == "Cairns" ||
+          d.properties.name == "Port Stephens" ||
           d.properties.state == "2";
       })
   }));
