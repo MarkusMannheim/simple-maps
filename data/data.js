@@ -47,16 +47,16 @@ var areas = [
   "Cessnock",
   "Coffs Harbour",
   "Dubbo Regional",
-  "Dungog Shire",
+  "Dungog",
   "Lake Macquarie",
   "Maitland",
   "Mid-Western Regional",
-  "Muswellbrook Shire",
+  "Muswellbrook",
   "Newcastle",
   "Port Stephens",
   "Shoalhaven",
   "Singleton",
-  "Wingecarribee Shire"
+  "Wingecarribee"
 ];
 
 fs.readFile("lga.geojson", "utf8", function(error, data) {
@@ -114,6 +114,8 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
           class: "lga"
         }
       });
+    } else if (d.properties.state == "1" && !areas.includes(d.properties.name)) {
+      console.log(d.properties);
     }
   });
 
