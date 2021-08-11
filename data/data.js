@@ -40,8 +40,8 @@ var areas = [
   ["Wollongong", "1"],
   ["Woollahra", "1"],
   // nth qld
-  ["Cairns", "3"],
-  ["Yarrabah", "3"],
+  // ["Cairns", "3"],
+  // ["Yarrabah", "3"],
   // regional nsw
   ["Armidale Regional", "1"],
   ["Ballina", "1"],
@@ -167,8 +167,7 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     type: "FeatureCollection",
     features: geoData
       .filter(function(d) {
-        return d.properties.name == "Cairns" ||
-          d.properties.name == "Greater Geelong" ||
+        return d.properties.name == "Greater Geelong" ||
           d.properties.name == "Mornington Peninsular" ||
           d.properties.name == "Port Stephens" ||
           d.properties.name == "Byron";
