@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155991615-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-155991615-1');
+    </script>
+    <!-- my stuff -->
+    <meta charset="utf-8">
+    <title>ACT regional travel bubble</title>
+    <meta name="author" content="Markus Mannheim">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Initial scripts -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
+    <link href="./resources/mapStyle.css" rel="stylesheet">
+    <link href="./resources/abcLogo64.png" rel="icon">
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="footer">
+      <div id="stayKey" class="legend">
+        <div class="box"></div>
+        <div class="label">stay-at-home orders apply</div>
+      </div>
+    </div>
+    <script>
+      // load LGA data
+      d3.json("./data/lga-covid.topojson")
+        .then(function(data) {
+          lgaData = topojson.feature(data, data.objects.areas);
+          // set up MapBox engine
+          mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
+          map = new mapboxgl.Map({
+            container: "map",
+            attributionControl: false,
+            style: "mapbox://styles/mapbox/light-v10",
+            center: [149.126944, -35.293056],
+            zoom: 11
+          });
+          map.on("load", function() {
+            // add navigation and custom attribution
+            map.addControl(new mapboxgl.NavigationControl())
+              .addControl(new mapboxgl.AttributionControl({
+                compact: true,
+                customAttribution: "ACT Health (COVID-19 advice), ABS (LGA boundaries)"
+              }))
+              .addSource("staySource", {
+                type: "geojson",
+                data: lgaData
+              })
+              .addLayer({
+                id: "stay",
+                type: "fill",
+                source: "staySource",
+                paint: {
+                  "fill-color": "#01CFFF",
+                  "fill-opacity": .5,
+                  "fill-outline-color": "white"
+                }
+              });
+            // fade in
+            d3.select("body")
+              .transition()
+                .duration(500)
+                .style("opacity", 1);
+            // transition to LGAs
+            d3.timeout(function() {
+              bounds = [
+                [ 144.06541401700008, -38.50298801599996 ],
+                [ 153.63872701900004, -28.461032004999936 ]
+              ];
+              zoomBounds = document.body.getBoundingClientRect().width < 500 ?
+                { top: 32, right: 16, bottom: 16, left: 16 } :
+                document.body.getBoundingClientRect().width < 638 ?
+                { top: 48, right: 32, bottom: 32, left: 32 } :
+                { top: 64, right: 32, bottom: 32, left: 32 };
+              map.fitBounds(bounds, {
+                padding: zoomBounds,
+                duration: 3500,
+                essential: true
+              });
+            }, 1000);
+          });
+        });
+    </script>
+  </body>
+</html>
