@@ -130,6 +130,17 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
       return d;
     });
 
+  console.log(d3.geoBounds({
+    type: "FeatureCollection",
+    features: geoData
+      .filter(function(d) {
+        return  d.properties.name == "Bourke" ||
+          d.properties.name == "Mornington Peninsula" ||
+          d.properties.name == "Port Stephens" ||
+          d.properties.name == "Byron";
+      })
+  }));
+
   mapData = {
     type: "FeatureCollection",
     features: []
@@ -168,17 +179,4 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
   fs.writeFile("lga-covid.geojson", JSON.stringify(mapData), function(error) {
     console.log("lga-covid.geojson written");
   });
-
-  boundaryAreas = [];
-
-  console.log(d3.geoBounds({
-    type: "FeatureCollection",
-    features: geoData
-      .filter(function(d) {
-        return d.properties.name == "Bourke" ||
-          d.properties.name == "Mornington Peninsular" ||
-          d.properties.name == "Port Stephens" ||
-          d.properties.name == "Byron";
-      })
-  }));
 });
