@@ -62,6 +62,14 @@ var areas = [
   ["Singleton", "1"],
   ["Tamworth Regional", "1"],
   ["Wingecarribee", "1"],
+  ["Bogan", "1"],
+  ["Bourke", "1"],
+  ["Brewarrina", "1"],
+  ["Coonamble", "1"],
+  ["Gilgandra", "1"],
+  ["Narromine", "1"],
+  ["Walgett", "1"],
+  ["Warren", "1"],
   // greater melbourne
   ["Banyule", "2"],
   ["Bayside", "2"],
@@ -99,7 +107,7 @@ var areas = [
 fs.readFile("lga.geojson", "utf8", function(error, data) {
   if (error) throw error;
 
-  var geoData = JSON
+  geoData = JSON
     .parse(data)
     .features
     .filter(function(d) {
@@ -167,7 +175,7 @@ fs.readFile("lga.geojson", "utf8", function(error, data) {
     type: "FeatureCollection",
     features: geoData
       .filter(function(d) {
-        return d.properties.name == "Greater Geelong" ||
+        return d.properties.name == "Bourke" ||
           d.properties.name == "Mornington Peninsular" ||
           d.properties.name == "Port Stephens" ||
           d.properties.name == "Byron";
