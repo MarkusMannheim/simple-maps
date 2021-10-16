@@ -11,7 +11,7 @@
     </script>
     <!-- my stuff -->
     <meta charset="utf-8">
-    <title>ACT COVID-19 hotspots</title>
+    <title>ACT travel region</title>
     <meta name="author" content="Markus Mannheim">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Initial scripts -->
@@ -27,12 +27,12 @@
     <div id="footer">
       <div id="stayKey" class="legend">
         <div class="box"></div>
-        <div class="label">stay-at-home orders apply</div>
+        <div class="label">ACT travel region</div>
       </div>
     </div>
     <script>
       // load LGA data
-      d3.json("./data/lga-covid.topojson")
+      d3.json("./data/zone.topojson")
         .then(function(data) {
           lgaData = topojson.feature(data, data.objects.areas);
           // set up MapBox engine
@@ -72,10 +72,7 @@
                 .style("opacity", 1);
             // transition to LGAs
             d3.timeout(function() {
-              bounds = [
-                [ 144.06541401700008, -38.50298801599996 ],
-                [ 153.63872701900004, -28.461032004999936 ]
-              ];
+              bounds = d3.geoBounds(lgaData);
               zoomBounds = document.body.getBoundingClientRect().width < 500 ?
                 { top: 32, right: 16, bottom: 16, left: 16 } :
                 document.body.getBoundingClientRect().width < 638 ?
